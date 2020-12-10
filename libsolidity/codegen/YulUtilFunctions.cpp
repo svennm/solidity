@@ -1272,7 +1272,7 @@ string YulUtilFunctions::storageByteArrayPopFunction(ArrayType const& _type)
 	});
 }
 
-string YulUtilFunctions::storageArrayPushFunction(ArrayType const& _type)
+string YulUtilFunctions::storageArrayPushFunction(ArrayType const& _type, TypePointer _fromType)
 {
 	solAssert(_type.location() == DataLocation::Storage, "");
 	solAssert(_type.isDynamicallySized(), "");
@@ -1327,7 +1327,10 @@ string YulUtilFunctions::storageArrayPushFunction(ArrayType const& _type)
 			("dataAreaFunction", arrayDataAreaFunction(_type))
 			("isByteArray", _type.isByteArray())
 			("indexAccess", storageArrayIndexAccessFunction(_type))
-			("storeValue", updateStorageValueFunction(*_type.baseType(), *_type.baseType()))
+			(
+				"storeValue",
+				updateStorageValueFunction(_fromType ? *_fromType : *_type.baseType(), *_type.baseType())
+			)
 			("maxArrayLength", (u256(1) << 64).str())
 			("shl", shiftLeftFunctionDynamic())
 			("shr", shiftRightFunction(248))
